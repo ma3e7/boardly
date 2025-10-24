@@ -1,0 +1,101 @@
+body {
+    font-family: Arial, sans-serif; 
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+main {
+    width: 100vw;
+    height: 100vh;
+}
+
+#buttonsContainer {
+    margin-right: 30px;
+}
+
+#buttonsContainer button {
+    background-color: #E58601;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+#buttonsContainer button:hover {
+    background-color: #b6721f;
+}
+
+#dashboard-image {
+    display: block;
+    margin: 30px auto;
+    max-width: 600px;
+    width: 90%;
+    border: 4px solid #46ACC8;
+    border-radius: 8px;
+}
+
+#intro {
+    text-align: center;
+    padding: 20px;
+}
+
+#intro h2 {
+    color: #DD8D29;
+    font-size: 28px;
+}
+
+#intro ul li {
+    color: #E2D200;
+    font-weight: bold;
+}
+
+#closeBtn {
+    background-color: #B40F20;
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+#closeBtn:hover {
+    background-color: #E58601;
+}
+
+.custom-shape-divider-top-1761299787 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(180deg);
+}
+
+.background-svg {
+    width: 100vw;
+    height: 100vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.layer1 {
+    background-image: url('/svg/wave-haikei.svg');
+
+}
+
+.overlay-content {
+    position: absolute; 
+    text-align: center;
+    color: #333;
+    padding: 40px 20px;
+}

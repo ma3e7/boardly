@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/styles.css">
+    <title>Boardly</title>
+</head>
+
+<body>
+    <div id="popup"></div>
+
+    <div class="background-svg layer1">
+        <div class="overlay-content">
+            <h1>Boardly</h1>
+            <div id="buttonsContainer">
+                <button id="signUpBtn">Sign up</button>
+                <button id="signInBtn">Sign in</button>
+            </div>
+            <h1>Welcome to Boardly!</h1>
+            <p>Keep track of all your board game sessions in one place.</p>
+            <img src="/Pages-Plan.png" alt="Picture of dashboard" id="dashboard-image">
+        </div>
+    </div>
+
+    <script>
+        const popup = document.getElementById('popup');
+
+        function openPopup(url) {
+            fetch(url)
+                .then(res => res.text())
+                .then(html => {
+                    popup.innerHTML = html + '<br><button id="closeBtn">Close</button>';
+                    document.getElementById('closeBtn').addEventListener('click', () => {
+                        popup.innerHTML = '';
+                    });
+                })
+                .catch(err => console.error('Error:', err));
+        }
+
+        document.getElementById('signInBtn').addEventListener('click', () => openPopup('/auth/signInForm'));
+        document.getElementById('signUpBtn').addEventListener('click', () => openPopup('/auth/signUpForm'));
+    </script>
+
+
+</body>
+
+</html>

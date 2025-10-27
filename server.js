@@ -1,37 +1,54 @@
-    const dotenv = require('dotenv');
-    dotenv.config();
-    const express = require('express');
-    const app = express();
-    const mongoose = require('mongoose');
-    const methodOverride = require('method-override');
-    const morgan = require('morgan');
-    const session = require('express-session');
+const dotenv = require("dotenv");
+dotenv.config();
+const express = require("express");
+const app = express();
+const mongoose = require("mongoose");
+const methodOverride = require("method-override");
+const morgan = require("morgan");
+const session = require("express-session");
 
-    const PORT = process.env.PORT ? PORT = process.env.PORT : "8000"
+const isSignedIn = require("./middleware/is-signed-in.js");
+const passUserToView = require("./middleware/pass-user-to-view.js");
 
-    app.use(morgan('dev'));
-    app.use(methodOverride('_method'));
-    app.use(express.urlencoded({ extended: true }));
-    app.set('view engine', 'ejs');
-    app.set('views', __dirname + '/views');
-    app.use(express.static(__dirname + '/assets'));
-    app.use(express.static(__dirname + '/public'));
+const authController = require("./controllers/authController");
+const sessionsController = require("./controllers/sessionsController.js");
 
+const PORT = process.env.PORT || 8000;
 
-    mongoose.connect(process.env.MONGODB_URI)
+app.use(morgan("dev"));
+app.use(methodOverride("_method"));
+app.use(express.urlencoded({ extended: true }));
+app.set("view engine", "ejs");
+app.set("views", __dirname + "/views");
+app.use(express.static(__dirname + "/assets"));
+app.use(express.static(__dirname + "/public"));
 
-    mongoose.connection.on('connected', () => {
-        console.log(`Connected on MongoDB: ${mongoose.connection.name}`)
-    })
+mongoose.connect(process.env.MONGODB_URI);
 
-    const authController = require('./controllers/authController');
+mongoose.connection.on("connected", () => {
+  console.log(`Connected on MongoDB: ${mongoose.connection.name}`);
+});
 
-    app.get('/', (req, res) => {
-        res.render('index.ejs')
-    })
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
-    app.use('/auth', authController); 
+app.use(passUserToView);
 
-    app.listen(PORT, () => 
-        console.log(`Server running on port ${PORT}`)
-    );
+app.get("/", (req, res) => {
+  if (req.session.user) {
+    res.redirect(`/sessions/${req.session.user.username}/dashboard`);
+  } else {
+    res.render("index.ejs");
+  }
+});
+
+app.use("/auth", authController);
+app.use(isSignedIn);
+app.use("/sessions", sessionsController);
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

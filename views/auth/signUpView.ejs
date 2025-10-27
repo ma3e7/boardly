@@ -1,6 +1,11 @@
+<head>
+  <link rel="stylesheet" href="/stylesheets/sign-up.css">
+</head>
+
 <div id="sign-up-container">
-  <h2>Sign up</h2>
-  <form action="/auth/signUp" method="POST">
+  <form id="sign-up-form" action="/auth/signUp" method="POST">
+    <a href="/" id="close-button"><img src="/svg/icon-close.svg" alt="close icon"></a>
+    <h2>Sign up</h2>
     <input type="text" name="username" placeholder="Please enter your username" required>
     <input type="password" name="password" placeholder="Please enter your password" required>
     <input type="password" name="confirmPassword" placeholder="Confirm your password" required>

@@ -40,12 +40,9 @@
             fetch(url)
                 .then(res => res.text())
                 .then(html => {
-                    popup.innerHTML = html + '<br><button id="closeBtn">Close</button>';
-                    document.getElementById('closeBtn').addEventListener('click', () => {
-                        popup.innerHTML = '';
-                    });
+                    popup.innerHTML = html;
                 })
-                .catch(err => console.error('Error:', err));
+                .catch(err => console.error('Error: ', err));
         }
 
         document.getElementById('signInBtn').addEventListener('click', () => openPopup('/auth/signInForm'));

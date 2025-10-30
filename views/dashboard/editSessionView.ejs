@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Session</title>
+    <link rel="stylesheet" href="/stylesheets/dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="modal" style="display: flex;">
+        <div class="modal-content">
+            <a href="javascript:history.back()" class="close-btn">
+                <img src="/svg/icon-close.svg" alt="close icon">
+            </a>
+
+            <h2>Edit Session</h2>
+
+            <form action="/sessions/<%= sessionData._id %>?_method=PUT" method="POST">
+                <input type="text" name="boardgame" value="<%= sessionData.boardgame %>" required
+                    placeholder="Boardgame Name" />
+
+                <input type="text" name="winner" value="<%= sessionData.winner?.username || '' %>" required
+                    placeholder="Winner" />
+
+                <input type="text" name="players" value="<%= sessionData.players.map(p => p.username).join(', ') %>"
+                    required placeholder="All players, separated by commas" />
+
+                <input type="number" name="duration" value="<%= sessionData.duration %>" required min="1"
+                    placeholder="Duration (minutes)" />
+
+                <button type="submit" class="submit-btn">Update Session</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

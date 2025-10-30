@@ -10,6 +10,7 @@
 </head>
 
 <body>
+    <div id="dashboard-popup" class="modal"></div>
     <div class="dashboard-container">
         <aside class="sidebar">
             <div class="sidebar-bg">
@@ -53,22 +54,36 @@
                                             <h3 class="date-title">Date played: <%= formattedDate %>
                                             </h3>
                                             <% } %>
-
                                                 <div class="session-card">
-                                                    <p><strong>Boardgame:</strong>
-                                                        <%= session.boardgame %>
-                                                    </p>
-                                                    <p><strong>Winner:</strong>
-                                                        <%= session.winner?.username || 'N/A' %>
-                                                    </p>
-                                                    <p><strong>Players:</strong>
-                                                        <%= session.players.map(p=> p.username).join(', ') %>
-                                                    </p>
-                                                    <p><strong>Duration:</strong>
-                                                        <%= Math.floor(session.duration / 60) %>h <%= session.duration %
-                                                                60 %>min
-                                                    </p>
+                                                    <div class="session-info">
+                                                        <p><strong>Boardgame:</strong>
+                                                            <%= session.boardgame %>
+                                                        </p>
+                                                        <p><strong>Winner:</strong>
+                                                            <%= session.winner?.username || 'N/A' %>
+                                                        </p>
+                                                        <p><strong>Players:</strong>
+                                                            <%= session.players.map(p=> p.username).join(', ') %>
+                                                        </p>
+                                                        <p><strong>Duration:</strong>
+                                                            <%= Math.floor(session.duration / 60) %>h <%=
+                                                                    session.duration % 60 %>min
+                                                        </p>
+                                                    </div>
+
+                                                    <div class="session-actions">
+                                                        <form action="/sessions/<%= session._id %>?_method=DELETE"
+                                                            method="POST">
+                                                            <button type="submit" class="delete-btn">Delete</button>
+                                                        </form>
+
+                                                        <button class="edit-btn"
+                                                            data-url="/sessions/<%= session._id %>/edit">Edit</button>
+
+                                                    </div>
                                                 </div>
+
+
                                                 <% }) %>
                                                     <% } %>
             </div>
@@ -98,6 +113,7 @@
     </div>
 
     <script>
+        const dashboardPopup = document.getElementById('dashboard-popup');
         const modal = document.getElementById("session-modal");
         const btn = document.getElementById("add-session-btn");
         const closeBtn = document.querySelector(".close-btn");
@@ -105,7 +121,38 @@
         btn.onclick = () => modal.style.display = "flex";
         closeBtn.onclick = () => modal.style.display = "none";
         window.onclick = e => { if (e.target == modal) modal.style.display = "none"; };
+
+        function openDashboardPopup(url) {
+            fetch(url)
+                .then(res => res.text())
+                .then(html => {
+                    dashboardPopup.innerHTML = html;
+                    dashboardPopup.style.display = 'flex';
+
+                    const closeBtn = dashboardPopup.querySelector('.close-btn');
+                    if (closeBtn) {
+                        closeBtn.onclick = () => dashboardPopup.style.display = 'none';
+                    }
+                })
+                .catch(err => console.error('Error loading popup:', err));
+        }
+
+
+
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                const url = btn.dataset.url;
+                openDashboardPopup(url);
+            });
+        });
+
+
+        window.onclick = e => {
+            if (e.target === dashboardPopup) dashboardPopup.style.display = 'none';
+        };
     </script>
+
 </body>
 
 </html>

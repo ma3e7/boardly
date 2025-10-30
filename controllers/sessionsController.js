@@ -58,4 +58,56 @@ router.post("/add", ensureAuthenticated, async (req, res) => {
   }
 });
 
+router.delete("/:id", ensureAuthenticated, async (req, res) => {
+  try {
+    await Session.findByIdAndDelete(req.params.id);
+    res.redirect(`/sessions/${req.session.user.username}/dashboard`);
+  } catch (err) {
+    console.error("Error deleting session:", err);
+    res.status(500).send("Server error");
+  }
+});
+
+router.get("/:id/edit", ensureAuthenticated, async (req, res) => {
+  try {
+    const sessionData = await Session.findById(req.params.id)
+      .populate("winner", "username")
+      .populate("players", "username")
+      .lean();
+
+    res.render("dashboard/editSessionView", { sessionData, user: req.session.user });
+  } catch (err) {
+    console.error("Error loading edit form:", err);
+    res.status(500).send("Server error");
+  }
+});
+
+router.put("/:id", ensureAuthenticated, async (req, res) => {
+  try {
+    const { boardgame, winner, players, duration } = req.body;
+
+    const winnerUser = await User.findOne({ username: winner });
+    const playerUsers = await User.find({
+      username: { $in: players.split(",").map((p) => p.trim()) },
+    });
+
+    if (!winnerUser || playerUsers.length === 0) {
+      return res.send("Invalid player usernames.");
+    }
+
+    await Session.findByIdAndUpdate(req.params.id, {
+      boardgame,
+      winner: winnerUser._id,
+      players: playerUsers.map((p) => p._id),
+      duration: parseInt(duration),
+    });
+
+    res.redirect(`/sessions/${req.session.user.username}/dashboard`);
+  } catch (err) {
+    console.error("Error updating session:", err);
+    res.status(500).send("Server error");
+  }
+});
+
+
 module.exports = router;

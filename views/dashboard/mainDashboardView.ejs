@@ -35,11 +35,11 @@
         <main class="main-content">
             <div class="top-bar">
                 <select id="sort-select">
-                    <option value="date">Sort by Date</option>
-                    <option value="winner">Sort by Winner</option>
-                    <option value="duration">Sort by Duration</option>
+                    <option value="date" <%=sortField==='date' ?'selected':'' %>>Sort by Date</option>
+                    <option value="duration" <%=sortField==='duration' ?'selected':'' %>>Sort by Duration</option>
                 </select>
                 <button id="add-session-btn">+ Add Session</button>
+                <a href="/auth/signOut" id="logout-btn">Log out</a>
             </div>
 
             <div class="sessions">
@@ -105,10 +105,14 @@
                     </form>
                 </div>
             </div>
-
             <div class="pagination">
-                <a href="/auth/signOut">Log out</a>
+                <% for(let i=1; i<=totalPages; i++) { %>
+                    <a href="?page=<%= i %>&sort=<%= sortField %>" class="page-btn <%= page === i ? 'active' : '' %>">
+                        <%= i %>
+                    </a>
+                    <% } %>
             </div>
+
         </main>
     </div>
 
@@ -117,6 +121,12 @@
         const modal = document.getElementById("session-modal");
         const btn = document.getElementById("add-session-btn");
         const closeBtn = document.querySelector(".close-btn");
+        const sortSelect = document.getElementById('sort-select');
+
+        sortSelect.addEventListener('change', () => {
+            const page = 1;
+            window.location.href = `?page=${page}&sort=${sortSelect.value}`;
+        });
 
         btn.onclick = () => modal.style.display = "flex";
         closeBtn.onclick = () => modal.style.display = "none";

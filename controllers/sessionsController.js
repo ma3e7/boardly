@@ -11,18 +11,38 @@ function ensureAuthenticated(req, res, next) {
 router.get("/:username/dashboard", ensureAuthenticated, async (req, res) => {
   try {
     const loggedInUser = req.session.user;
+    const sortField = req.query.sort || "date";
+    const page = parseInt(req.query.page) || 1;
+    const limit = 5;
 
-    const sessions = await Session.find({
+    let sortOption = {};
+    if (sortField === "date") {
+      sortOption.date = -1;
+    } else if (sortField === "duration") {
+      sortOption.duration = -1;
+    }
+
+    const query = {
       $or: [{ winner: loggedInUser._id }, { players: loggedInUser._id }],
-    })
+    };
+
+    const totalSessions = await Session.countDocuments(query);
+    const totalPages = Math.ceil(totalSessions / limit);
+
+    const sessions = await Session.find(query)
       .populate("winner", "username")
       .populate("players", "username")
-      .sort({ date: -1 })
+      .sort(sortOption)
+      .skip((page - 1) * limit)
+      .limit(limit)
       .lean();
 
     res.render("dashboard/mainDashboardView", {
       sessions,
       user: loggedInUser,
+      page,
+      totalPages,
+      sortField,
     });
   } catch (err) {
     console.error("Error loading dashboard:", err);
@@ -75,7 +95,10 @@ router.get("/:id/edit", ensureAuthenticated, async (req, res) => {
       .populate("players", "username")
       .lean();
 
-    res.render("dashboard/editSessionView", { sessionData, user: req.session.user });
+    res.render("dashboard/editSessionView", {
+      sessionData,
+      user: req.session.user,
+    });
   } catch (err) {
     console.error("Error loading edit form:", err);
     res.status(500).send("Server error");
@@ -108,6 +131,5 @@ router.put("/:id", ensureAuthenticated, async (req, res) => {
     res.status(500).send("Server error");
   }
 });
-
 
 module.exports = router;

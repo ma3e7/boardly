@@ -1,4 +1,4 @@
-/* #sign-in-container {
+#sign-in-container {
     position: absolute;
     z-index: 100;
     display: flex;
@@ -74,4 +74,4 @@ button[type="submit"]:hover {
 
 #close-button:hover {
     background-color: #03C5B5;
-} */
+}

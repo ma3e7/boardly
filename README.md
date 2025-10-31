@@ -6,7 +6,7 @@ Boardly is a companion app for board game enthusiasts. Log your plays, record wi
 
 It helps you keep track of your game nights, from who played and who won, to which game was on the table, how long the session lasted, and when it took place. Whether you’re a casual player or a competitive strategist, Boardly makes it easy to record, relive, and analyze your board gaming moments.
 
-
+[Click me to open](https://boardly-7263b4b6d90e.herokuapp.com/)
 
 ## Technologies
 
